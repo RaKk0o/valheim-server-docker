@@ -51,9 +51,7 @@ RUN go build -ldflags="-s -w" \
     && mv valheim-logfilter /usr/local/bin/
 
 WORKDIR /build
-RUN git clone https://github.com/Yepoleb/python-a2s.git \
-    && cd python-a2s \
-    && python3 setup.py bdist --format=gztar
+RUN pip install git+https://github.com/Yepoleb/python-a2s.git
 
 WORKDIR /build/supervisor
 RUN curl -L -o /tmp/supervisor.tar.gz https://github.com/Supervisor/supervisor/archive/${SUPERVISOR_VERSION}.tar.gz \
@@ -92,7 +90,6 @@ WORKDIR /
 RUN rm -rf /usr/local/lib/
 RUN tar xzvf /build/supervisor/dist/supervisor-*.linux-x86_64.tar.gz
 RUN tar xzvf /build/env2cfg/dist/env2cfg-*.linux-x86_64.tar.gz
-RUN tar xzvf /build/python-a2s/dist/python-a2s-*.linux-x86_64.tar.gz
 COPY supervisord.conf /usr/local/etc/supervisord.conf
 RUN mkdir -p /usr/local/etc/supervisor/conf.d/ \
     && chmod 640 /usr/local/etc/supervisord.conf
