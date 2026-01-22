@@ -8,7 +8,17 @@ ARG GO_VERSION=1.24.1
 
 RUN apt-get update
 RUN apt-get -y install apt-utils
-RUN apt-get -y install build-essential curl git python3 python3-pip python3-venv shellcheck
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    git \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-setuptools \
+    python3-pkg-resources \
+    shellcheck \
+    busybox
 
 # Install Go 1.24 manually
 RUN curl -L -o /tmp/go${GO_VERSION}.linux-amd64.tar.gz https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz \
@@ -25,7 +35,7 @@ WORKDIR /build/env2cfg
 COPY ./env2cfg/ /build/env2cfg/
 RUN if [ "${TESTS:-true}" = true ]; then \
     python3 -m venv /tmp/venv \
-    && /tmp/venv/bin/pip install tox \
+    && /tmp/venv/bin/pip install --upgrade pip setuptools wheel tox \
     && /tmp/venv/bin/tox \
     ; \
     fi
